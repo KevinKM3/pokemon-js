@@ -10,6 +10,11 @@ const pokeTypeTwo = document.querySelector(".poke-type-two");
 const pokeWeight = document.querySelector(".poke-weight");
 const pokeHeight = document.querySelector(".poke-height");
 
+// right side
+const pokeListItems = document.querySelectorAll(".list-item");
+
+console.log(pokeListItems);
+
 // constand and variables
 
 const TYPES = [
@@ -44,6 +49,7 @@ const resetScreen = () => {
   }
 };
 
+// Obtain data for left side of screen
 fetch("https://pokeapi.co/api/v2/pokemon/1")
   .then((res) => res.json())
   .then((data) => {
@@ -70,4 +76,28 @@ fetch("https://pokeapi.co/api/v2/pokemon/1")
 
     pokeFrontImage.src = data["sprites"]["front_default"] || "";
     pokeBackImage.src = data["sprites"]["back_default"] || "";
+  });
+
+// Obtain data for right side screen
+
+fetch("https://pokeapi.co/api/v2/pokemon?offset=0&limit=20")
+  .then((res) => res.json())
+  .then((data) => {
+    console.log(data);
+    // destructured property from data object
+    const { results } = data;
+
+    for (let i = 0; i < pokeListItems.length; i++) {
+      const pokeListItem = pokeListItems[i];
+      const resultData = results[i];
+
+      if (resultData) {
+        const { name, url } = resultData;
+        const urlArray = url.split("/");
+        const id = urlArray[urlArray.length - 2];
+        pokeListItem.textContent = id + ". " + capitalize(name);
+      } else {
+        pokeListItem.textContent = "";
+      }
+    }
   });
